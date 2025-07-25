@@ -1,38 +1,52 @@
 RAG Chatbot with DeepSeek API and FAISS
-This project implements a Retrieval-Augmented Generation (RAG) chatbot in a Jupyter Notebook, enabling users to query content from .pdf, .docx, or .txt files. It combines semantic search with generative AI to provide contextually relevant answers.
+
+This project implements a Retrieval-Augmented Generation (RAG) chatbot in a Jupyter notebook, enabling users to query content from .pdf, .docx, or .txt files. It combines local embeddings for semantic search with the DeepSeek API for generating contextually grounded answers.
+Table of Contents
+
 Overview
-The RAG Chatbot processes documents by:
+Features
+Prerequisites
+Installation
+Usage
+Flowchart
+File Structure
+Troubleshooting
+Contributing
+License
 
-Extracting text from supported file formats.
-Splitting text into overlapping chunks for context preservation.
-Generating embeddings using a local sentence-transformers model (all-MiniLM-L6-v2).
-Storing embeddings in a FAISS index for efficient similarity search.
-Retrieving relevant chunks based on user queries.
-Querying the DeepSeek Chat API with the retrieved context to generate answers.
+Overview
+The RAG Chatbot processes documents by extracting text, chunking it, generating embeddings using a local model (all-MiniLM-L6-v2), storing them in a FAISS index for efficient retrieval, and querying the DeepSeek API to generate answers based on retrieved context. This approach ensures answers are grounded in the document content while leveraging powerful language generation.
+Features
 
-The notebook is designed for practitioners interested in natural language processing (NLP), semantic search, and large language models (LLMs).
+Supports .pdf, .docx, and .txt file formats.
+Uses sentence-transformers for local embeddings (no API cost).
+Employs FAISS for fast vector-based semantic search.
+Integrates with DeepSeek API for high-quality answer generation.
+Handles large documents by chunking with overlap to preserve context.
+Displays answers in formatted Markdown within Jupyter.
+
 Prerequisites
 
-Python: Version 3.7 or higher.
-Jupyter Notebook: For running the .ipynb file.
-DeepSeek API Key: Obtain from DeepSeek.
-Supported File Formats: .pdf, .docx, or .txt files containing the content to query.
+Python 3.8 or higher
+Jupyter Notebook
+DeepSeek API key (sign up at DeepSeek)
+Supported file types: .pdf, .docx, .txt
 
 Installation
 
-Clone or Download the Notebook:
-
-Download RAG.ipynb to your local machine or clone the repository if hosted.
+Clone the Repository (or download the notebook):
+git clone <repository-url>
+cd <repository-directory>
 
 
 Install Dependencies:Run the following command to install required Python packages:
-pip install faiss-cpu tiktoken openai python-docx pdfplumber PyMuPDF sentence-transformers --quiet
+pip install faiss-cpu tiktoken openai python-docx pdfplumber PyMuPDF sentence-transformers
 
 
 Set Up DeepSeek API Key:
 
 Obtain your API key from DeepSeek.
-In the notebook, replace "ENTER_YOUR_DEEPSEEK_API_KEY" with your actual key:os.environ["DEEPSEEK_API_KEY"] = "your-api-key-here"
+In the notebook, replace "ENTER_YOUR_DEEPSEEK_API_KEY" with your key in the cell under Step 2:os.environ["DEEPSEEK_API_KEY"] = "your-api-key-here"
 
 
 
@@ -40,91 +54,67 @@ In the notebook, replace "ENTER_YOUR_DEEPSEEK_API_KEY" with your actual key:os.e
 
 Usage
 
-Open the Notebook:
-
-Launch Jupyter Notebook:jupyter notebook RAG.ipynb
-
+Open the Notebook:Launch Jupyter Notebook and open RAG.ipynb:
+jupyter notebook
 
 
+Run the Cells Sequentially:
 
-Run Cells Sequentially:
-
-Execute each cell in order to:
-Install dependencies (if not already installed).
-Import libraries and set the API key.
-Load and process your document.
-Generate and store embeddings.
-Query the chatbot with your question.
-
-
-
-
-Load a Document:
-
-When prompted, enter the path to your .pdf, .docx, or .txt file. For example:/Users/username/Documents/sample.pdf
-
-
-
-
-Ask Questions:
-
-Input your question when prompted (e.g., "Tell me about the evolution of AI").
-The chatbot retrieves relevant document chunks and generates an answer using the DeepSeek API.
+Execute each cell in order, starting with library imports and API key setup.
+When prompted, provide the path to your .pdf, .docx, or .txt file (e.g., /path/to/your/file.pdf).
+Enter a question when prompted (e.g., "Tell me about the evolution of AI").
 
 
 View Results:
 
-Retrieved chunks and the final answer are displayed in Markdown format within the notebook.
+The notebook will display the top retrieved document chunks and the DeepSeek API's answer in Markdown format.
+
+
+Example:
+
+Input file: llm.pdf
+Question: "Tell me about the evolution of AI"
+Output: A detailed answer summarizing the evolution of language AI, grounded in the document.
 
 
 
 Flowchart
-Below is a flowchart illustrating the RAG Chatbot's workflow, written in Mermaid syntax for rendering on compatible platforms (e.g., GitHub).
+Below is a flowchart illustrating the RAG Chatbot's workflow, rendered using Mermaid syntax:
 graph TD
     A[Start] --> B[Load Document<br>(.pdf/.docx/.txt)]
     B --> C[Extract Text]
-    C --> D[Split Text into<br>Overlapping Chunks]
-    D --> E[Generate Embeddings<br>(SentenceTransformer)]
-    E --> F[Store Embeddings<br>in FAISS Index]
+    C --> D[Chunk Text<br>(500 tokens, 50 overlap)]
+    D --> E[Generate Embeddings<br>(all-MiniLM-L6-v2)]
+    E --> F[Store in FAISS Index]
     F --> G[User Inputs Question]
-    G --> H[Encode Question<br>(SentenceTransformer)]
-    H --> I[Retrieve Top-K Chunks<br>from FAISS]
+    G --> H[Encode Question]
+    H --> I[Retrieve Top-K Chunks<br>(FAISS Search)]
     I --> J[Combine Chunks<br>as Context]
-    J --> K[Query DeepSeek API<br>with Context]
-    K --> L[Display Answer<br>in Markdown]
+    J --> K[Query DeepSeek API]
+    K --> L[Display Answer<br>(Markdown)]
     L --> M[End]
 
-Project Structure
+File Structure
+├── RAG.ipynb        # Main Jupyter notebook with RAG implementation
+├── README.md        # This file
+└── <your-document>  # Your .pdf, .docx, or .txt file (user-provided)
 
-RAG.ipynb: The main Jupyter Notebook containing the RAG Chatbot implementation.
-No additional files are required, but you need a document (.pdf, .docx, or .txt) to query.
-
-Notes
-
-Performance: The all-MiniLM-L6-v2 model is lightweight and runs locally, making it cost-effective and fast for embedding generation.
-Token Limits: The DeepSeek API context is capped at 6000 characters to avoid token overflow. Adjust max_context_chars in the notebook if needed.
-Error Handling: Ensure your DeepSeek API key is valid. Check for network issues if API requests fail.
-Security: Verify the legitimacy of any external APIs or services used. Store API keys securely and avoid hardcoding them in production.
-Customization:
-Modify max_tokens (default: 500) or overlap (default: 50) in the split_text function to adjust chunk size.
-Increase k in retrieve_top_k to retrieve more context chunks for broader answers.
-
-
-Limitations:
-The notebook assumes a single document. For multiple documents, modify the code to process and index multiple files.
-The DeepSeek API requires an active internet connection.
-
-
-
-Example
-Input File: llm.pdf (a document about large language models).Question: "Tell me about the evolution of AI."Output: A detailed answer summarizing the evolution from bag-of-words models to modern LLMs, based on the document's content.
 Troubleshooting
 
-File Loading Errors: Ensure the file path is correct and the file format is supported.
-API Errors: Check your DeepSeek API key and internet connection. Review the error message printed by the notebook.
-Embedding Issues: If embeddings fail, ensure sentence-transformers is installed and the model (all-MiniLM-L6-v2) is downloaded.
+API Key Error: Ensure your DeepSeek API key is correctly set in the notebook.
+File Not Found: Verify the file path is correct and the file is a supported type (.pdf, .docx, .txt).
+Module Not Found: Install all dependencies listed in the Installation section.
+DeepSeek API Failure: Check your internet connection and API key validity. Inspect the error message printed in the notebook.
+Line Spacing Issue: If Markdown rendering looks off, ensure no extra spaces or tabs exist in the notebook’s Markdown cells.
 
 Contributing
-Feel free to fork this project, enhance the notebook, or submit pull requests with improvements. Suggestions for additional features (e.g., multi-document support, different embedding models) are welcome.
+Contributions are welcome! Please:
+
+Fork the repository.
+Create a feature branch (git checkout -b feature/new-feature).
+Commit changes (git commit -m 'Add new feature').
+Push to the branch (git push origin feature/new-feature).
+Open a pull request.
+
 License
-This project is licensed under the MIT License. See the LICENSE file for details (if applicable).
+This project is licensed under the MIT License. See the LICENSE file for details.
