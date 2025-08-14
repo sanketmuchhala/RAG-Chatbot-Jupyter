@@ -1,4 +1,4 @@
-# Just Practicing — AI, RAG, Langchain, and Some Notebooks
+# Just Practicing — AI, RAG, Langchain and mant other things using Jupyter Notebooks
 
 Hey there,
 
