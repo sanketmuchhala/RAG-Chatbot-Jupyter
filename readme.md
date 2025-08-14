@@ -1,4 +1,4 @@
-# Just Practicing — RAG, AI, and Some Notebooks
+# Just Practicing — AI, RAG, Langchain, and Some Notebooks
 
 Hey there,
 
